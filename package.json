@@ -1,0 +1,42 @@
+{
+  "name": "tim",
+  "productName": "Tim",
+  "version": "1.0.0",
+  "description": "time tracker + invoice generator",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm static/js/*; babel --plugins transform-react-jsx raw --out-dir static/js",
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "electron-builder install-app-deps",
+    "predist": "npm run build",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "mac": {
+      "target": [
+        "dir"
+      ],
+      "category": "public.app-category.utilities",
+      "icon": "static/assets/icon.png"
+    }
+  },
+  "author": "kiavashp",
+  "license": "ISC",
+  "dependencies": {
+    "csv": "3.1.0",
+    "electron-default-menu": "1.0.1",
+    "mkdirp": "0.5.1",
+    "moment": "2.22.2",
+    "moment-duration-format": "2.2.2",
+    "react": "16.4.1",
+    "react-dom": "16.4.1",
+    "verror": "1.10.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.26.0",
+    "babel-plugin-transform-react-jsx": "6.24.1",
+    "electron": "2.0.3",
+    "electron-builder": "20.20.4"
+  }
+}

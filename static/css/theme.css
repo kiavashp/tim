@@ -1,0 +1,151 @@
+:root {
+    --background-color: #212226;
+}
+
+body {
+    background: var(--background-color);
+    color: #fefefe;
+    -webkit-font-smoothing: antialiased;
+    font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
+}
+
+input {
+    font-weight: inherit;
+}
+
+/* titlebar */
+.titlebar {
+    font-family: Open Sans, sans-serif;
+    font-weight: 600;
+    color: #5e5e61;
+}
+
+.titlebar .export-button {
+    display: inline-block;
+    background-image: url(../assets/export.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px auto;
+}
+
+.titlebar .export-button:hover {
+    background-image: url(../assets/export-hover.svg);
+}
+
+.titlebar .export-button:active {
+    background-image: url(../assets/export-active.svg);
+}
+
+#tim-wrapper.help-open .titlebar .add-time-button {
+    display: none;
+}
+
+/* tim-wrapper */
+#tim-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+/* timer */
+.timer {
+    overflow: auto;
+    -webkit-user-select: none;
+    flex: auto;
+    padding-bottom: 20px;
+    /* background set explicitly to get white scrollbar */
+    background-color: var(--background-color);
+}
+
+.timer-display {
+    display: block;
+    text-align: center;
+    font-size: 22px;
+    margin-top: 10px;
+    padding: 40px 0;
+}
+
+.timer-display > span {
+    outline: none;
+    user-select: none;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    margin: 0 -2px;
+}
+
+.timer-display > span:focus {
+    border-color: rgb(83, 127, 250);
+}
+
+.timer-notes {
+    margin: 20px 40px;
+}
+
+.timer-notes-item {
+    display: inline-block;
+    outline: none;
+    user-select: none;
+    border: 2px solid transparent;
+    border-radius: 4px;
+}
+
+.timer-notes-item:focus {
+    user-select: none;
+    border-color: rgb(83, 127, 250);
+}
+
+.timer-notes-item-value {
+    display: inline-block;
+    padding: 4px 2px 4px 8px;
+}
+
+.timer-notes-item-remove {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    color: #d66;
+    color: #777;
+}
+
+.timer-notes-input {
+    padding: 4px 8px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    background: #1d1d1d;
+}
+
+.timer-notes-input:focus {
+    border-color: rgb(83, 127, 250);
+}
+
+.timer-toggle {
+    display: block;
+    margin: 20px auto;
+    width: 100px;
+    height: 100px;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    background: #6d6;
+    color: #333;
+    font-weight: bold;
+}
+
+.timer-toggle:focus {
+    border-color: rgb(83, 127, 250);
+}
+
+.timer-toggle.running {
+    background: #d66;
+}
+
+.timer-cancel {
+    display: block;
+    margin: 0 auto;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.timer-cancel:focus {
+    background: rgb(83, 127, 250);
+}

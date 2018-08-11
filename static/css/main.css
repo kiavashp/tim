@@ -1,0 +1,51 @@
+html {
+    height: 100%;
+}
+
+body {
+    height: inherit;
+    margin: 0;
+    font-family: sans-serif;
+    cursor: default;
+    font-size: 14px;
+}
+
+input, button {
+    -webkit-appearance: none;
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    outline: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* tim-root */
+#tim-root {
+    height: inherit;
+}
+
+#tim-wrapper {
+    height: inherit;
+}
+
+/* titlebar */
+.titlebar {
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    flex-shrink: 0;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}
+
+.titlebar .export-button {
+    -webkit-app-region: no-drag;
+    width: 42px;
+    height: 38px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    cursor: pointer;
+}
