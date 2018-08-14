@@ -36,10 +36,6 @@ input {
     background-image: url(../assets/export-active.svg);
 }
 
-#tim-wrapper.help-open .titlebar .add-time-button {
-    display: none;
-}
-
 /* tim-wrapper */
 #tim-wrapper {
     display: flex;
