@@ -41,13 +41,16 @@ class Exporter {
         this.exporter = exporter;
     }
 
-    async create(dates, entries) {
-        const {exporter, exportsDir} = this;
-        const result = await exporter(dates, entries);
+    async fileExists(filepath) {
         const fsAccess = util.promisify(fs.access);
-        const fileExists = filepath => fsAccess(filepath)
+
+        return fsAccess(filepath)
             .then(() => true)
             .catch(e => false);
+    }
+
+    async exportFile(result) {
+        const {exportsDir} = this;
 
         assert.strictEqual(typeof result, 'object', 'exporter: result must be an object');
         assert.ok(!Array.isArray(result), 'exporter: result must be an object');
@@ -59,14 +62,14 @@ class Exporter {
         const {filename, contents, options={}} = result;
         let filepath = path.join(exportsDir, path.basename(filename));
 
-        if (await fileExists(filepath)) {
+        if (await this.fileExists(filepath)) {
             let extname = path.extname(filename);
             let basename = path.basename(filename, extname);
             let index = 1;
             do {
                 filepath = path.join(exportsDir, `${basename} (${index})${extname}`);
                 index += 1;
-            } while (await fileExists(filepath));
+            } while (await this.fileExists(filepath));
         }
 
         return new Promise((resolve, reject) => {
@@ -78,6 +81,17 @@ class Exporter {
                 }
             });
         });
+    }
+
+    async create(dates, entries) {
+        const {exporter, exportsDir} = this;
+        const result = await exporter(dates, entries);
+
+        if (Array.isArray(result)) {
+            return Promise.all(result.map(context => this.exportFile(context)));
+        } else {
+            return this.exportFile(result);
+        }
     }
 }
 

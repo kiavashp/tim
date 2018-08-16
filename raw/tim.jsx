@@ -55,7 +55,11 @@ class Tim extends React.Component {
         const entries = timers.getRange(dates.start, dates.end);
 
         exporter.create(dates, entries).then(filepath => {
-            app.dock.downloadFinished(filepath);
+            if (Array.isArray(filepath)) {
+                filepath.forEach(filepath => app.dock.downloadFinished(filepath));
+            } else {
+                app.dock.downloadFinished(filepath);
+            }
         }).catch(error => {
             console.error(error);
             alert(error.message);
