@@ -56,15 +56,17 @@ class Timer extends React.Component {
     }
 
     stop(cancel) {
-        const {running, start, end, notes} = this.state;
+        const {running, start, end, notes, newNote} = this.state;
 
         clearInterval(running);
 
         if (!cancel) {
+            let addNote = newNote && newNote.trim();
+
             this.saveTimer({
                 start,
                 end,
-                notes
+                notes: addNote ? notes.concat(addNote) : notes
             });
         }
 
