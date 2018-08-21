@@ -130,9 +130,14 @@ class Timer extends React.Component {
         const key = event.key;
         const value = event.target.value.trim();
 
-        if (key === 'Enter' && value) {
+        if (key === 'Enter') {
             const newNotes = notes.slice();
-            newNotes[editIndex] = value;
+            if (value) {
+                newNotes[editIndex] = value;
+            } else {
+                newNotes.splice(editIndex, 1);
+            }
+
             this.setState({
                 editing: false,
                 editIndex: null,
@@ -155,6 +160,15 @@ class Timer extends React.Component {
         }
     }
 
+    onNotesItemKeyDown(event, index) {
+        const {key} = event;
+
+        if (key === 'Backspace') {
+            this.removeNote(index);
+            event.preventDefault();
+        }
+    }
+
     onNotesItemKeyPress(event, index) {
         const {key} = event;
 
@@ -173,6 +187,18 @@ class Timer extends React.Component {
             editIndex: index < 0 ? notes.length + index : index,
             editValue: note
         });
+    }
+
+    removeNote(index) {
+        const {notes} = this.state;
+        const newNotes = notes.slice();
+
+        if (index >= 0 && index < notes.length) {
+            newNotes.splice(index, 1);
+            this.setState({
+                notes: newNotes
+            });
+        }
     }
 
     onTimerDisplayKeyDown(event, multiplier) {
@@ -249,7 +275,8 @@ class Timer extends React.Component {
                             return (
                                 <div key={i} className="timer-notes-item"
                                     tabIndex="0"
-                                    onKeyPress={event => this.onNotesItemKeyPress(event, i)}>
+                                    onKeyPress={event => this.onNotesItemKeyPress(event, i)}
+                                    onKeyDown={event => this.onNotesItemKeyDown(event, i)}>
                                     <div className="timer-notes-item-value">{note}</div>
                                     <div className="timer-notes-item-remove"
                                         onClick={event => this.removeNote(i)}
