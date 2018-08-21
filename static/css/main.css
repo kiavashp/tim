@@ -29,23 +29,3 @@ input, button {
 #tim-wrapper {
     height: inherit;
 }
-
-/* titlebar */
-.titlebar {
-    height: 38px;
-    line-height: 38px;
-    text-align: center;
-    flex-shrink: 0;
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
-}
-
-.titlebar .export-button {
-    -webkit-app-region: no-drag;
-    width: 42px;
-    height: 38px;
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    cursor: pointer;
-}

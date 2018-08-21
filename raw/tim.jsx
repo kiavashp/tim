@@ -1,25 +1,49 @@
 'use strict';
 
 const {remote} = require('electron');
-const {app} = remote;
+const {app, shell} = remote;
+const assert = require('assert');
 const path = require('path');
 const React = require('react');
+const GlobalEventComponent = require('./global-event-component');
 const Titlebar = require('./titlebar');
 const Timer = require('./timer');
+const Reports = require('./reports');
 const Timers = require('./timers');
 const Exporter = require('./exporter');
 const appDataPath = `${app.getPath('appData')}/${app.getName()}/`;
 const exportsPath = app.getPath('downloads');
+const timeDataPath = `${appDataPath}/time-data`;
+const userExporterPath = `${appDataPath}/user-exporter`;
 
-class Tim extends React.Component {
+class Tim extends GlobalEventComponent {
     constructor(props) {
         super(props);
 
-        this.timers = new Timers(`${appDataPath}/time-data`);
+        this.timers = new Timers(timeDataPath);
         this.exporter = new Exporter({
-            userExporter: `${appDataPath}/user-exporter`,
+            userExporter: userExporterPath,
             exportsDir: exportsPath
         });
+        this.state = {
+            reportsOpen: false
+        };
+    }
+
+    onGlobalKeyDown(event) {
+        const {reportsOpen} = this.state;
+        const {key, shiftKey} = event;
+        let newState = {};
+
+        if (reportsOpen && key === '}' && shiftKey) {
+            this.setState({
+                reportsOpen: false
+            });
+        } else if (!reportsOpen && key === '{' && shiftKey) {
+            this.setState({
+                reportsOpen: true
+            });
+        }
     }
 
     saveTimer(timer) {
@@ -27,31 +51,21 @@ class Tim extends React.Component {
         timers.save(timer);
     }
 
-    getInvoiceDates() {
-        let now = new Date();
-        let year = now.getFullYear();
-        let month = now.getMonth();
-        let date = now.getDate();
-        let start;
-        let end;
-
-        if (date < 15) {
-            start = new Date(year, month - 1, 16);
-            end = new Date(year, month, 0);
-        } else {
-            start = new Date(year, month, 1);
-            end = new Date(year, month, 15);
-        }
-
-        return {start, end};
+    openDataDirectory() {
+        shell.openItem(timeDataPath);
     }
 
-    createExport() {
+    createExport(dates) {
         const {timers, exporter} = this;
+
+        assert.strictEqual(typeof dates, 'object', 'dates must be an object');
+        assert.strictEqual(typeof dates.start, 'object', 'dates.start must be a Date object');
+        assert.ok(dates.start instanceof Date, 'dates.start must be a Date object');
+        assert.strictEqual(typeof dates.end, 'object', 'dates.end must be a Date object');
+        assert.ok(dates.end instanceof Date, 'dates.end must be a Date object');
 
         timers.load();
 
-        const dates = this.getInvoiceDates();
         const entries = timers.getRange(dates.start, dates.end);
 
         exporter.create(dates, entries).then(filepath => {
@@ -66,13 +80,27 @@ class Tim extends React.Component {
         });
     }
 
+    toggleReports(open=!this.state.reportsOpen) {
+        this.setState({
+            reportsOpen: open
+        });
+    }
+
     render() {
+        const {state, timers} = this;
+        const {reportsOpen} = state;
+
         return (
             <div id="tim-wrapper">
                 <Titlebar key="titlebar"
-                    createExport={() => this.createExport()}/>
+                    toggleReports={() => this.toggleReports()}/>
                 <Timer key="timer"
                     saveTimer={timer => this.saveTimer(timer)}/>
+                <Reports key="reports"
+                    timers={timers}
+                    open={reportsOpen}
+                    createExport={(dates) => this.createExport(dates)}
+                    openDataDirectory={() => this.openDataDirectory()}/>
             </div>
         );
     }

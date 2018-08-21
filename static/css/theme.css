@@ -13,29 +13,6 @@ input {
     font-weight: inherit;
 }
 
-/* titlebar */
-.titlebar {
-    font-family: Open Sans, sans-serif;
-    font-weight: 600;
-    color: #5e5e61;
-}
-
-.titlebar .export-button {
-    display: inline-block;
-    background-image: url(../assets/export.svg);
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 14px auto;
-}
-
-.titlebar .export-button:hover {
-    background-image: url(../assets/export-hover.svg);
-}
-
-.titlebar .export-button:active {
-    background-image: url(../assets/export-active.svg);
-}
-
 /* tim-wrapper */
 #tim-wrapper {
     display: flex;
@@ -117,6 +94,7 @@ input {
 
 .timer-toggle {
     display: block;
+    cursor: pointer;
     margin: 20px auto;
     width: 100px;
     height: 100px;

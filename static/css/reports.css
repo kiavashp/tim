@@ -1,0 +1,88 @@
+.reports {
+    display: block;
+    position: absolute;
+    top: 46px;
+    bottom: 16px;
+    right: -260px;
+    width: 250px;
+    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
+    transition: 0.2s right ease;
+    background: #262a2f;
+    z-index: 10;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    overflow: auto;
+}
+
+.reports.open {
+    right: 0;
+}
+
+.reports-item {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    padding: 4px 16px;
+}
+
+.report-item-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 4px;
+    height: 2px;
+    background: #2a566f;
+}
+
+.reports-item-left {
+    flex-grow: 1;
+    padding: 6px 0;
+}
+
+.reports-item-date {
+    display: block;
+    font-size: 14px;
+    color: #f8f8f8;
+    padding-bottom: 4px;
+}
+
+.reports-item-hours {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #9e9ea1;
+}
+
+.reports-item-export {
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: inline-block;
+    cursor: pointer;
+    width: 30px;
+    height: inherit;
+    background-image: url(../assets/export.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px auto;
+}
+
+.reports-item-export:hover {
+    background-image: url(../assets/export-hover.svg);
+}
+
+.reports-item-export:active {
+    background-image: url(../assets/export-active.svg);
+}
+
+.reports-open-data-directory {
+    text-align: center;
+    cursor: pointer;
+    padding: 8px 8px;
+    color: #4e4e51;
+    font-size: 12px;
+    text-decoration: underline;
+}
+
+.reports-open-data-directory:hover {
+    color: #5e5e61;
+}

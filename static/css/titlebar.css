@@ -1,0 +1,34 @@
+.titlebar {
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    flex-shrink: 0;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+    font-family: Open Sans, sans-serif;
+    font-weight: 600;
+    color: #5e5e61;
+}
+
+.titlebar .reports-button {
+    -webkit-app-region: no-drag;
+    width: 42px;
+    height: 38px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    cursor: pointer;
+    display: inline-block;
+    background-image: url(../assets/reports.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px auto;
+}
+
+.titlebar .reports-button:hover {
+    background-image: url(../assets/reports-hover.svg);
+}
+
+.titlebar .reports-button:active {
+    background-image: url(../assets/reports-active.svg);
+}
