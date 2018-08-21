@@ -11,15 +11,15 @@ let mainWindow;
 
 function createWindow() {
     const screen = electron.screen.getPrimaryDisplay().bounds;
-    const width = 386;
+    const width = 520;
     const height = 460;
     const padding = 20;
 
 	mainWindow = new BrowserWindow({
         width,
         height,
-        minWidth: 280,
-        minHeight: 340,
+        minWidth: 520,
+        minHeight: 380,
         x: screen.width - width - padding,
         y: screen.height - height - padding,
         titleBarStyle: 'hiddenInset',

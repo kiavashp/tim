@@ -81,7 +81,7 @@ class Reports extends React.Component {
     calcDatePercentage(end, now) {
         let diff = end.getDate() - now.getDate();
         let percent = (diff / 15) * 100;
-        return percent.toFixed(2);
+        return percent.toFixed(0);
     }
 
     createReports() {
@@ -129,14 +129,14 @@ class Reports extends React.Component {
             <div className={`reports ${open ? 'open' : ''}`}>
                 {reports.map(report => {
                     const {id, start, end, hours, future, progress} = report;
-                    return (<div key={id} className="reports-item">
+                    return (<div key={id} className="reports-item" title={future ? `${progress}% through invoice period` : null}>
                         {future
                             ? <div className="report-item-progress"
                                 style={{width: `${progress}%`}}></div>
                             : ''}
                         <div className="reports-item-left">
                             <div className="reports-item-date">{moment(end).format('MMMM D YYYY')}</div>
-                            <div className="reports-item-hours">{moment.duration(hours, 'hours').format('hh [hrs] mm [mins]')}</div>
+                            <div className="reports-item-hours">{moment.duration(hours, 'hours').format('h [hrs] m [mins]', {trim: false})}</div>
                         </div>
                         <div className="reports-item-export"
                             title="export"

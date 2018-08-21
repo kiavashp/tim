@@ -94,13 +94,16 @@ class Tim extends GlobalEventComponent {
             <div id="tim-wrapper">
                 <Titlebar key="titlebar"
                     toggleReports={() => this.toggleReports()}/>
-                <Timer key="timer"
-                    saveTimer={timer => this.saveTimer(timer)}/>
-                <Reports key="reports"
-                    timers={timers}
-                    open={reportsOpen}
-                    createExport={(dates) => this.createExport(dates)}
-                    openDataDirectory={() => this.openDataDirectory()}/>
+                <div className="tim-body">
+                    <Timer key="timer"
+                        saveTimer={timer => this.saveTimer(timer)}/>
+                    <div key="separator" className="separator"></div>
+                    <Reports key="reports"
+                        timers={timers}
+                        open={reportsOpen}
+                        createExport={(dates) => this.createExport(dates)}
+                        openDataDirectory={() => this.openDataDirectory()}/>
+                </div>
             </div>
         );
     }

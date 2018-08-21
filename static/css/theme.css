@@ -19,6 +19,17 @@ input {
     flex-direction: column;
 }
 
+.tim-body {
+    display: flex;
+    flex-direction: row;
+    height: inherit;
+}
+
+.separator {
+    border-left: 1px solid #444;
+    margin: 40px 0;
+}
+
 /* timer */
 .timer {
     overflow: auto;
@@ -59,6 +70,7 @@ input {
     user-select: none;
     border: 2px solid transparent;
     border-radius: 4px;
+    padding: 4px 2px 4px 8px;
 }
 
 .timer-notes-item:focus {
@@ -67,8 +79,8 @@ input {
 }
 
 .timer-notes-item-value {
-    display: inline-block;
-    padding: 4px 2px 4px 8px;
+    display: inline;
+    word-break: break-all;
 }
 
 .timer-notes-item-remove {
@@ -77,8 +89,12 @@ input {
     height: 16px;
     line-height: 16px;
     text-align: center;
-    color: #d66;
     color: #777;
+}
+
+.timer-notes-item-remove:hover,
+.timer-notes-item-remove:active {
+    color: #d66;
 }
 
 .timer-notes-input {

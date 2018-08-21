@@ -1,28 +1,26 @@
 .reports {
     display: block;
-    position: absolute;
-    top: 46px;
-    bottom: 16px;
-    right: -260px;
+    flex-shrink: 0;
+    margin-right: -251px;
     width: 250px;
-    box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
-    transition: 0.2s right ease;
-    background: #262a2f;
-    z-index: 10;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
+    box-sizing: border-box;
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    background: var(--background-color);
+    transition: 0.2s margin-right ease;
     overflow: auto;
 }
 
 .reports.open {
-    right: 0;
+    margin-right: 0;
 }
 
 .reports-item {
     display: flex;
     position: relative;
     flex-direction: row;
-    padding: 4px 16px;
+    padding: 8px;
 }
 
 .report-item-progress {
