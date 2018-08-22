@@ -78,9 +78,10 @@ class Reports extends React.Component {
         return {start, end};
     }
 
-    calcDatePercentage(end, now) {
-        let diff = end.getDate() - now.getDate();
-        let percent = (diff / 15) * 100;
+    calcDatePercentage({start, end}, now) {
+        let range = end.getDate() - start.getDate();
+        let diff = (now.getDate() - start.getDate()) / range;
+        let percent = diff * 100;
         return percent.toFixed(0);
     }
 
@@ -100,7 +101,7 @@ class Reports extends React.Component {
                 end: dates.end,
                 hours: 0,
                 future: timeshift >= 0,
-                progress: this.calcDatePercentage(dates.end, new Date())
+                progress: this.calcDatePercentage(dates, new Date())
             };
 
             times.forEach(timer => {
