@@ -148,15 +148,18 @@ class Timer extends React.Component {
     }
 
     onNotesEditKeyDown(event) {
+        const {editIndex} = this.state;
         const {target, key} = event;
         const {value} = target;
 
-        if (key === 'Escape' && value) {
+        if (key === 'Escape') {
             this.setState({
                 editing: false,
                 editIndex: null,
                 editValue: null
             });
+        } else if (key === 'Backspace' && !value) {
+            this.removeNote(editIndex);
         }
     }
 
@@ -165,6 +168,9 @@ class Timer extends React.Component {
 
         if (key === 'Backspace') {
             this.removeNote(index);
+            this.setState({
+                editing: false
+            });
             event.preventDefault();
         }
     }
@@ -196,7 +202,8 @@ class Timer extends React.Component {
         if (index >= 0 && index < notes.length) {
             newNotes.splice(index, 1);
             this.setState({
-                notes: newNotes
+                notes: newNotes,
+                editing: false
             });
         }
     }
@@ -226,10 +233,9 @@ class Timer extends React.Component {
     }
 
     render() {
-        const {running, start, end, notes, newNote, setDuration,
-            editing,
-            editIndex,
-            editValue
+        const {
+            running, start, end, notes, newNote, setDuration,
+            editing, editIndex, editValue
         } = this.state;
         const setDurationTimes = moment.duration(setDuration, 's')
             .format('h:mm:ss', {trim: false})
