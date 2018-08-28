@@ -82,7 +82,8 @@ class Timers extends EventEmitter {
 
         for (let id in timers) {
             let timer = timers[id];
-            const date = moment(timer.date).toDate();
+            const dateString = moment(timer.start).format('YYYY-MM-DD');
+            const date = new Date(dateString);
 
             if (date >= start && date <= end) {
                 results.push(timer);
@@ -96,13 +97,9 @@ class Timers extends EventEmitter {
         const {directory} = this;
         const data = {};
 
-        let start = moment(timer.start);
-        let end = moment(timer.end);
-
-        data.id = start.format('x');
-        data.date = start.format('YYYY-MM-DD');
-        data.startTime = start.format('HH:mm:ss');
-        data.endTime = end.format('HH:mm:ss');
+        data.id = moment(timer.start).format('x');
+        data.start = timer.start;
+        data.end = timer.end;
         data.notes = timer.notes;
 
         this.addTimer(data);

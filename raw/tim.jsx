@@ -93,6 +93,7 @@ class Tim extends GlobalEventComponent {
         return (
             <div id="tim-wrapper">
                 <Titlebar key="titlebar"
+                    reportsOpen={reportsOpen}
                     toggleReports={() => this.toggleReports()}/>
                 <div className="tim-body">
                     <Timer key="timer"

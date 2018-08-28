@@ -29,6 +29,7 @@
     background-image: url(../assets/reports-hover.svg);
 }
 
-.titlebar .reports-button:active {
+.titlebar .reports-button:active,
+.titlebar .reports-button.open {
     background-image: url(../assets/reports-active.svg);
 }

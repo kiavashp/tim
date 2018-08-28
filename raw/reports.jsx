@@ -79,10 +79,19 @@ class Reports extends React.Component {
     }
 
     calcDatePercentage({start, end}, now) {
+        if (end < now) {
+            return 100;
+        } else if (start > now) {
+            return 0;
+        }
         let range = end.getDate() - start.getDate();
         let diff = (now.getDate() - start.getDate()) / range;
         let percent = diff * 100;
         return percent.toFixed(0);
+    }
+
+    calcHours(start, end) {
+        return (end - start) / 36e5;
     }
 
     createReports() {
@@ -101,14 +110,30 @@ class Reports extends React.Component {
                 end: dates.end,
                 hours: 0,
                 future: timeshift >= 0,
-                progress: this.calcDatePercentage(dates, new Date())
+                progress: this.calcDatePercentage(dates, new Date()),
+                timers: [],
+                showTimers: false
             };
+            let currentDate;
 
-            times.forEach(timer => {
-                const {date, startTime, endTime} = timer;
-                const start = moment(`${date}T${startTime}`).toDate();
-                const end = moment(`${date}T${endTime}`).toDate();
-                let hours = (end - start) / 36e5;
+            times.reverse().forEach(timer => {
+                const date = moment(timer.start).format('YYYY-MM-DD');
+                const start = new Date(timer.start);
+                const end = new Date(timer.end);
+                const hours = this.calcHours(start, end);
+
+                if (!currentDate || currentDate.date !== date) {
+                    currentDate = {
+                        id: timer.id,
+                        date: date,
+                        hours: hours,
+                        times: [{start, end}]
+                    };
+                    report.timers.push(currentDate);
+                } else if (currentDate.date === date) {
+                    currentDate.times.push({start, end});
+                    currentDate.hours += hours;
+                }
 
                 report.id = report.id || timer.id;
                 report.hours += hours;
@@ -122,26 +147,61 @@ class Reports extends React.Component {
         return reports;
     }
 
+    onReportClick(event, index) {
+        const {reports} = this.state;
+        const newReports = reports.slice();
+        const showTimers = newReports[index].showTimers;
+
+        newReports[index] = Object.assign({}, newReports[index], {
+            showTimers: !showTimers
+        });
+
+        this.setState({
+            reports: newReports
+        });
+    }
+
+    onReportExport(event, dates) {
+        event.stopPropagation();
+        this.createExport(dates);
+    }
+
     render() {
-        const {createExport} = this;
         const {open, reports} = this.state;
 
         return (
             <div className={`reports ${open ? 'open' : ''}`}>
-                {reports.map(report => {
-                    const {id, start, end, hours, future, progress} = report;
-                    return (<div key={id} className="reports-item" title={future ? `${progress}% through invoice period` : null}>
-                        {future
-                            ? <div className="report-item-progress"
+                {reports.map((report, index) => {
+                    const {id, start, end, hours, future, progress, timers, showTimers} = report;
+                    return (<div key={id}
+                        className={`reports-item ${future ? 'future' : ''} ${showTimers ? 'showTimers' : ''}`}>
+                        <div className="reports-item-main"
+                            title={future ? `${progress}% through invoice period` : null}
+                            onClick={event => this.onReportClick(event, index)}>
+                            <div className="reports-item-left">
+                                <div className="reports-item-date">{moment(end).format('MMMM D YYYY')}</div>
+                                <div className="reports-item-hours">
+                                {moment.duration(hours, 'hours').format('h [hrs] m [mins]', {trim: false})}
+                                </div>
+                            </div>
+                            <div className="reports-item-export"
+                                title="export"
+                                onClick={event => this.onReportExport(event, {start, end})}></div>
+                            <div className="reports-item-progress"
                                 style={{width: `${progress}%`}}></div>
-                            : ''}
-                        <div className="reports-item-left">
-                            <div className="reports-item-date">{moment(end).format('MMMM D YYYY')}</div>
-                            <div className="reports-item-hours">{moment.duration(hours, 'hours').format('h [hrs] m [mins]', {trim: false})}</div>
                         </div>
-                        <div className="reports-item-export"
-                            title="export"
-                            onClick={() => createExport({start, end})}></div>
+                        {showTimers ? (<div className="reports-item-timers">
+                            {timers.map(timer => (<div key={timer.id} className="reports-item-timers-item">
+                                <div className="reports-item-timers-item-left">
+                                    <div className="reports-item-timers-item-date">{moment(timer.date).format('dddd Do')}</div>
+                                    <div className="reports-item-timers-item-times">
+                                        {timer.times.map(time => (<div key={time.start.toJSON()}>{
+                                            moment(time.start).format('h:mm A')} - {moment(time.end).format('h:mm A')
+                                        }</div>))}
+                                    </div>
+                                </div>
+                            </div>))}
+                        </div>) : ''}
                     </div>);
                 })}
                 <div className="reports-open-data-directory"

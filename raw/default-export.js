@@ -12,14 +12,17 @@ module.exports = async (dates, entries) => {
     let totalHours = moment.duration(0);
 
     for (let entry of entries) {
-        let hours = moment.duration(entry.endTime).subtract(moment.duration(entry.startTime));
+        let date = moment(entry.end).format('YYYY-MM-DD');
+        let end = new Date(entry.end);
+        let start = new Date(entry.start);
+        let hours = moment.duration(end - start, 'milliseconds');
 
         totalHours.add(hours);
 
         records.push([
             entry.date,
-            moment(`${entry.date} ${entry.startTime}`).format('h:mm A'),
-            moment(`${entry.date} ${entry.endTime}`).format('h:mm A'),
+            moment(entry.start).format('h:mm A'),
+            moment(entry.end).format('h:mm A'),
             hours.format('h:mm', {trim: false}),
             entry.notes.join(', ')
         ]);
