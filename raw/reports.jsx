@@ -64,7 +64,12 @@ class Reports extends React.Component {
         let end;
 
         if (biMonthShift) {
-            date = date < 15 ? 16 : 1;
+            if (date < 15) {
+                month -= 1;
+                date = 16;
+            } else {
+                date = 1;
+            }
         }
 
         if (date < 15) {
