@@ -108,10 +108,11 @@ class Timer extends React.Component {
     }
 
     onNotesAddKeyDown(event) {
+        const {notes} = this.state;
         const {target, key, repeat} = event;
         const {value} = target;
 
-        if (key === 'Backspace' && !repeat && !value) {
+        if (key === 'Backspace' && !repeat && !value && notes.length) {
             this.editNote(-1);
             event.preventDefault();
         }
