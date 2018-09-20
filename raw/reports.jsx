@@ -103,21 +103,24 @@ class Reports extends React.Component {
         const {timers} = this;
         const reports = [];
         let timeshift = 0;
+        let firstDate = timers.getFirstDate();
         let dates;
         let times;
 
-        while (
-            (dates = this.getDates(timeshift)) &&
-            (times = timers.getRange(dates.start, dates.end)).length
-        ) {
+        do {
+            dates = this.getDates(timeshift);
+            times = timers.getRange(dates.start, dates.end);
+
             let report = {
+                id: moment(dates.start).format('YYYY-MM-DD'),
                 start: dates.start,
                 end: dates.end,
                 hours: 0,
                 future: timeshift >= 0,
                 progress: this.calcDatePercentage(dates, new Date()),
                 timers: [],
-                showTimers: false
+                showTimers: false,
+                empty: true
             };
             let currentDate;
 
@@ -140,14 +143,16 @@ class Reports extends React.Component {
                     currentDate.hours += hours;
                 }
 
-                report.id = report.id || timer.id;
+                report.empty = false;
                 report.hours += hours;
             });
 
             reports.push(report);
 
             timeshift -= 1;
-        }
+        } while (
+            dates.start >= firstDate
+        )
 
         return reports;
     }
@@ -177,9 +182,9 @@ class Reports extends React.Component {
         return (
             <div className={`reports ${open ? 'open' : ''}`}>
                 {reports.map((report, index) => {
-                    const {id, start, end, hours, future, progress, timers, showTimers} = report;
+                    const {id, start, end, hours, future, progress, timers, showTimers, empty} = report;
                     return (<div key={id}
-                        className={`reports-item ${future ? 'future' : ''} ${showTimers ? 'showTimers' : ''}`}>
+                        className={`reports-item ${future ? 'future' : ''} ${showTimers ? 'showTimers' : ''} ${empty ? 'empty' : ''}`}>
                         <div className="reports-item-main"
                             title={future ? `${progress}% through invoice period` : null}
                             onClick={event => this.onReportClick(event, index)}>

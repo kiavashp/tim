@@ -76,6 +76,22 @@ class Timers extends EventEmitter {
         ids.forEach(id => this.removeTimer(id));
     }
 
+    getFirstDate() {
+        const {timers} = this;
+        let firstDate = new Date();
+
+        for (let id in timers) {
+            let {start} = timers[id];
+            const startDateString = moment(start).format('YYYY-MM-DD');
+            const startDate = new Date(startDateString);
+            if (startDate < firstDate) {
+                firstDate = startDate;
+            }
+        }
+
+        return firstDate;
+    }
+
     getRange(start, end) {
         const {timers} = this;
         let results = [];

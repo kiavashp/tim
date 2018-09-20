@@ -21,6 +21,18 @@
     display: block;
 }
 
+.reports-item.empty {
+    opacity: 0.5;
+}
+
+.reports-item.empty .reports-item-main:before {
+    opacity: 0;
+}
+
+.reports-item.empty .reports-item-export {
+    display: none;
+}
+
 .reports-item-main {
     display: flex;
     position: relative;
