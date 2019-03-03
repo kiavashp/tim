@@ -99,6 +99,10 @@ class Reports extends React.Component {
         return (end - start) / 36e5;
     }
 
+    calcDateChange(start, end) {
+        return end.getDate() - start.getDate();
+    }
+
     createReports() {
         const {timers} = this;
         const reports = [];
@@ -129,17 +133,19 @@ class Reports extends React.Component {
                 const start = new Date(timer.start);
                 const end = new Date(timer.end);
                 const hours = this.calcHours(start, end);
+                const dateChange = this.calcDateChange(start, end);
+                const time = {start, end, dateChange};
 
                 if (!currentDate || currentDate.date !== date) {
                     currentDate = {
                         id: timer.id,
                         date: date,
                         hours: hours,
-                        times: [{start, end}]
+                        times: [time]
                     };
                     report.timers.push(currentDate);
                 } else if (currentDate.date === date) {
-                    currentDate.times.push({start, end});
+                    currentDate.times.push(time);
                     currentDate.hours += hours;
                 }
 
@@ -207,7 +213,7 @@ class Reports extends React.Component {
                                     <div className="reports-item-timers-item-times">
                                         {timer.times.map(time => (<div key={time.start.toJSON()}>{
                                             moment(time.start).format('h:mm A')} - {moment(time.end).format('h:mm A')
-                                        }</div>))}
+                                        }{time.dateChange ? ` +${time.dateChange}` : ''}</div>))}
                                     </div>
                                 </div>
                             </div>))}
