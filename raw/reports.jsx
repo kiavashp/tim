@@ -42,11 +42,31 @@ class Reports extends React.Component {
         timers.removeListener('update', this.buildReports);
     }
 
+    transferVisualState(oldReports, newReports) {
+        const oldIndex = {};
+
+        newReports.forEach((report, index) => {
+            oldIndex[report.id] = index;
+        });
+
+        for (let report of oldReports) {
+            if (oldIndex.hasOwnProperty(report.id)) {
+                let index = oldIndex[report.id];
+                newReports[index].showTimers = report.showTimers;
+            }
+        }
+    }
+
     buildReports() {
-        const reports = this.createReports();
+        const {reports: oldReports} = this.state;
+        const newReports = this.createReports();
+
+        if (oldReports.length) {
+            this.transferVisualState(oldReports, newReports);
+        }
 
         this.setState({
-            reports: reports
+            reports: newReports
         });
     }
 
