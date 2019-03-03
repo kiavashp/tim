@@ -30,6 +30,12 @@ class Timers extends EventEmitter {
         return timers.hasOwnProperty(id);
     }
 
+    getTimer(id) {
+        const {timers} = this;
+        const {[id]: timer} = timers;
+        return timer;
+    }
+
     addTimer(timer) {
         const {timers} = this;
         const {id} = timer;
@@ -58,15 +64,25 @@ class Timers extends EventEmitter {
 
         files.filter(filename => path.extname(filename) === '.json')
             .forEach(filename => {
+                const filepath = `${directory}/${filename}`;
                 const id = path.basename(filename, '.json');
                 if (this.hasTimer(id)) {
+                    const {dateLoaded} = this.getTimer(id);
+                    const {mtime} = fs.statSync(filepath);
+
                     ids.splice(ids.indexOf(id), 1);
-                    return;
+                    if (mtime < dateLoaded) {
+                        return;
+                    } else {
+                        this.removeTimer(id);
+                    }
                 }
 
                 try {
-                    const data = fs.readFileSync(`${directory}/${filename}`);
+                    const data = fs.readFileSync(filepath);
                     const timer = JSON.parse(data);
+
+                    timer.dateLoaded = new Date();
 
                     this.addTimer(timer);
                 } catch (error) {
