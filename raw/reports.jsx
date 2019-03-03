@@ -203,7 +203,7 @@ class Reports extends React.Component {
                         {showTimers ? (<div className="reports-item-timers">
                             {timers.map(timer => (<div key={timer.id} className="reports-item-timers-item">
                                 <div className="reports-item-timers-item-left">
-                                    <div className="reports-item-timers-item-date">{moment(timer.date).format('dddd Do')}</div>
+                                    <div className="reports-item-timers-item-date">{moment(timer.date).format('dddd Do')} <div className="reports-item-timers-item-total-hours">{timer.hours.toFixed(1)} hrs</div></div>
                                     <div className="reports-item-timers-item-times">
                                         {timer.times.map(time => (<div key={time.start.toJSON()}>{
                                             moment(time.start).format('h:mm A')} - {moment(time.end).format('h:mm A')
