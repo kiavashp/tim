@@ -241,7 +241,9 @@ class Reports extends React.Component {
                     </div>);
                 })}
                 <div className="reports-open-data-directory"
-                    onClick={() => this.openDataDirectory()}>open time-data</div>
+                    onClick={() => this.openDataDirectory()}>open time-data/</div>
+                <div className="reports-open-exporter-directory"
+                    onClick={() => this.openUserExporterDirectory()}>open user-exporter/</div>
             </div>
         );
     }

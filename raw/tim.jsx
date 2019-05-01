@@ -55,6 +55,10 @@ class Tim extends GlobalEventComponent {
         shell.openItem(timeDataPath);
     }
 
+    openUserExporterDirectory() {
+        shell.openItem(userExporterPath);
+    }
+
     createExport(dates) {
         const {timers, exporter} = this;
 
@@ -103,7 +107,8 @@ class Tim extends GlobalEventComponent {
                         timers={timers}
                         open={reportsOpen}
                         createExport={(dates) => this.createExport(dates)}
-                        openDataDirectory={() => this.openDataDirectory()}/>
+                        openDataDirectory={() => this.openDataDirectory()}
+                        openUserExporterDirectory={() => this.openUserExporterDirectory()}/>
                 </div>
             </div>
         );

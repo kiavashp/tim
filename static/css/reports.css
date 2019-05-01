@@ -162,7 +162,8 @@
     background-size: 10px auto;
 }
 
-.reports-open-data-directory {
+.reports-open-data-directory,
+.reports-open-exporter-directory {
     text-align: center;
     cursor: pointer;
     padding: 8px 8px;
@@ -171,6 +172,11 @@
     text-decoration: underline;
 }
 
-.reports-open-data-directory:hover {
+.reports-open-exporter-directory {
+    padding-top: 4px;
+}
+
+.reports-open-data-directory:hover,
+.reports-open-exporter-directory:hover {
     color: #5e5e61;
 }

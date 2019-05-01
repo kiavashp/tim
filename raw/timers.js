@@ -114,8 +114,11 @@ class Timers extends EventEmitter {
 
         for (let id in timers) {
             let timer = timers[id];
-            const dateString = moment(timer.start).format('YYYY-MM-DD');
-            const date = new Date(dateString);
+            const mdate = moment(timer.start);
+            const year = mdate.year();
+            const month = mdate.month();
+            const day = mdate.date();
+            const date = new Date(year, month, day);
 
             if (date >= start && date <= end) {
                 results.push(timer);
