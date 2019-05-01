@@ -15,6 +15,7 @@ class Reports extends React.Component {
         this.timers = props.timers;
         this.createExport = props.createExport;
         this.openDataDirectory = props.openDataDirectory;
+        this.openUserExporterDirectory = props.openUserExporterDirectory;
 
         this.state = {
             open: false,
