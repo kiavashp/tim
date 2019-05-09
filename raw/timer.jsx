@@ -20,7 +20,11 @@ class Timer extends React.Component {
 
         this.state = {
             running: null,
-            setDuration: 0,
+            setDuration: {
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            },
             start: timer.start,
             end: timer.end,
             notes: timer.notes,
@@ -40,7 +44,8 @@ class Timer extends React.Component {
 
     start() {
         const {setDuration} = this.state;
-        let start = new Date(Date.now() - (setDuration * 1000));
+        const {hours, minutes, seconds} = setDuration;
+        let start = new Date(Date.now() - (seconds * 1e3) - (minutes * 6e4) - (hours * 36e5));
         let interval = setInterval(() => {
             this.setState({
                 end: new Date()
@@ -51,7 +56,11 @@ class Timer extends React.Component {
             running: interval,
             start: start,
             end: new Date(),
-            setDuration: 0
+            setDuration: {
+                hours: 0,
+                minutes: 0,
+                seconds: 0
+            }
         });
     }
 
@@ -209,26 +218,42 @@ class Timer extends React.Component {
         }
     }
 
-    onTimerDisplayKeyDown(event, multiplier) {
+    onTimerDisplayKeyDown(event, unit) {
         const {key} = event;
-        const {setDuration} = this.state;
-        let direction;
+        const setDuration = Object.assign({}, this.state.setDuration);
+        let change;
 
         if (event.key === 'ArrowDown') {
-            direction = -1;
+            change = -1;
         } else if (event.key === 'ArrowUp') {
-            direction = 1;
+            change = 1;
         }
 
-        if (direction) {
-            let value = setDuration + (direction * multiplier);
+        if (change) {
+            let value = setDuration[unit] + change;
 
-            if (value < 0) {
-                value = setDuration;
+            switch(unit) {
+                case 'seconds':
+                case 'minutes':
+                    if (value > 59) {
+                        value = 0;
+                    } else if (value < 0) {
+                        value = 59;
+                    }
+                    break;
+                case 'hours':
+                    if (value > 23) {
+                        value = 0;
+                    } else if (value < 0) {
+                        value = 23;
+                    }
+                    break;
             }
 
+            setDuration[unit] = value;
+
             this.setState({
-                setDuration: value
+                setDuration
             });
         }
     }
@@ -238,29 +263,31 @@ class Timer extends React.Component {
             running, start, end, notes, newNote, setDuration,
             editing, editIndex, editValue
         } = this.state;
-        const setDurationTimes = moment.duration(setDuration, 's')
-            .format('h:mm:ss', {trim: false})
-            .split(':');
+        const setDurationTimes = moment.duration({
+            hours: setDuration.hours,
+            minutes: setDuration.minutes,
+            seconds: setDuration.seconds
+        }).format('hh:mm:ss', {trim: false}).split(':');
 
         return (
             <div className="timer">
                 {running
                     ? <div className="timer-display">
-                        {moment.duration(end - start).format('h:mm:ss', {trim: false})}
+                        {moment.duration(end - start).format('hh:mm:ss', {trim: false})}
                       </div>
                     : <div className="timer-display">
                         <span
                             className="timer-display-hour"
                             tabIndex="0"
-                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 3600)}
+                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 'hours')}
                         >{setDurationTimes[0]}</span>:<span
                             className="timer-display-minute"
                             tabIndex="0"
-                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 60)}
+                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 'minutes')}
                         >{setDurationTimes[1]}</span>:<span
                             className="timer-display-second"
                             tabIndex="0"
-                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 1)}
+                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 'seconds')}
                         >{setDurationTimes[2]}</span>
                       </div>
                 }
