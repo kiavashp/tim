@@ -220,7 +220,7 @@ class Timer extends React.Component {
 
     onTimerDisplayKeyDown(event, unit) {
         const {key} = event;
-        const {setDuration} = this.state;
+        const setDuration = Object.assign({}, this.state.setDuration);
         let change;
 
         if (event.key === 'ArrowDown') {
