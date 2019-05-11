@@ -1,0 +1,90 @@
+#tim-wrapper.mini {
+    flex-direction: row;
+    -webkit-app-region: drag;
+}
+
+#tim-wrapper.mini .titlebar {
+    height: unset;
+}
+
+#tim-wrapper.mini .titlebar .title,
+#tim-wrapper.mini .titlebar .right {
+    display: none;
+}
+
+#tim-wrapper.mini .titlebar .left {
+    padding: 3px 0;
+}
+
+#tim-wrapper.mini .titlebar .left .titlebar-button {
+    display: block;
+    height: 32px;
+}
+
+#tim-wrapper.mini .tim-body {
+    flex-grow: 1;
+}
+
+#tim-wrapper.mini .timer {
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+#tim-wrapper.mini .timer-display {
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    line-height: 76px;
+}
+
+#tim-wrapper.mini .timer-controls {
+    display: flex;
+    flex-direction: column;
+    width: 80px;
+    margin: 8px;
+    -webkit-app-region: no-drag;
+}
+
+#tim-wrapper.mini .timer-notes {
+    display: none;
+}
+
+#tim-wrapper.mini .timer-toggle {
+    box-sizing: border-box;
+    margin: 0;
+    border: none;
+    width: unset;
+    height: inherit;
+    flex-grow: 1;
+    border-radius: 5px;
+    background-color: unset;
+    color: #6d6;
+}
+
+#tim-wrapper.mini .timer-cancel {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    width: unset;
+    height: 38px;
+    background-color: unset;
+    border-radius: 5px;
+    color: #666;
+}
+
+#tim-wrapper.mini .timer-cancel:active {
+    color: #888;
+}
+
+#tim-wrapper.mini .timer-toggle:active,
+#tim-wrapper.mini .timer-cancel:active {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#tim-wrapper.mini .timer-toggle.running {
+    flex-grow: unset;
+    color: #d66;
+    height: 38px;
+    margin: 0;
+}

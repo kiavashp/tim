@@ -40,6 +40,8 @@ class Reports extends React.Component {
     }
 
     componentWillUnmount() {
+        const {timers} = this;
+
         timers.removeListener('update', this.buildReports);
     }
 

@@ -6,14 +6,24 @@ const title = remote.getCurrentWindow().webContents.getTitle();
 
 class Titlebar extends React.Component {
     render() {
-        const {toggleReports, reportsOpen} = this.props;
+        const {toggleReports, reportsOpen, expand, miniPlayerMode, close} = this.props;
 
         return (
             <div className="titlebar">
-                {title}
-                <div className={`reports-button ${reportsOpen ? 'open' : ''}`}
-                    title="reports"
-                    onClick={event => toggleReports()}></div>
+                <div className="left">
+                    <div className="titlebar-button close-button"
+                        title="close"
+                        onClick={event => close()}></div>
+                    <div className={`titlebar-button expand-button ${miniPlayerMode ? 'enabled' : ''}`}
+                        title="mini player"
+                        onClick={event => expand()}></div>
+                </div>
+                <span className="title">{title}</span>
+                <div className="right">
+                    <div className={`titlebar-button reports-button ${reportsOpen ? 'open' : ''}`}
+                        title="reports"
+                        onClick={event => toggleReports()}></div>
+                </div>
             </div>
         );
     }

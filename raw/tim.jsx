@@ -20,14 +20,22 @@ class Tim extends GlobalEventComponent {
     constructor(props) {
         super(props);
 
+        this.ipc = props.ipc;
         this.timers = new Timers(timeDataPath);
         this.exporter = new Exporter({
             userExporter: userExporterPath,
             exportsDir: exportsPath
         });
         this.state = {
-            reportsOpen: false
+            reportsOpen: false,
+            miniPlayerMode: false
         };
+
+        this.ipc.on('set-mini-player', (event, enabled) => {
+            this.setState({
+                miniPlayerMode: enabled
+            });
+        });
     }
 
     onGlobalKeyDown(event) {
@@ -90,15 +98,49 @@ class Tim extends GlobalEventComponent {
         });
     }
 
+    close() {
+        const {ipc} = this;
+        ipc.send('close');
+    }
+
+    expand(enabled=!this.state.miniPlayerMode) {
+        const {ipc} = this;
+        ipc.send('expand');
+
+        this.setState({
+            miniPlayerMode: enabled
+        });
+    }
+
     render() {
         const {state, timers} = this;
-        const {reportsOpen} = state;
+        const {reportsOpen, miniPlayerMode} = state;
+
+        if (miniPlayerMode) {
+            return (
+                <div id="tim-wrapper" className="mini">
+                    <Titlebar key="titlebar"
+                        reportsOpen={reportsOpen}
+                        toggleReports={() => this.toggleReports()}
+                        miniPlayerMode={miniPlayerMode}
+                        expand={() => this.expand()}
+                        close={() => this.close()}/>
+                    <div className="tim-body">
+                        <Timer key="timer"
+                            saveTimer={timer => this.saveTimer(timer)}/>
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div id="tim-wrapper">
                 <Titlebar key="titlebar"
                     reportsOpen={reportsOpen}
-                    toggleReports={() => this.toggleReports()}/>
+                    toggleReports={() => this.toggleReports()}
+                    miniPlayerMode={miniPlayerMode}
+                    expand={() => this.expand()}
+                    close={() => this.close()}/>
                 <div className="tim-body">
                     <Timer key="timer"
                         saveTimer={timer => this.saveTimer(timer)}/>

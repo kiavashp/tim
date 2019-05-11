@@ -329,15 +329,17 @@ class Timer extends React.Component {
                                 onChange={event => this.onNotesAddChange(event)}/>
                     }
                 </div>
-                <button className={`timer-toggle ${running ? 'running' : ''}`}
-                    onClick={event => this.toggleTimer(event)}>
-                    {running ? 'stop' : 'start'}
-                </button>
-                {running
-                    ? <button className='timer-cancel'
-                        onClick={event => this.stop(true)}
-                        >cancel</button>
-                    : ''}
+                <div className="timer-controls">
+                    <button className={`timer-toggle ${running ? 'running' : ''}`}
+                        onClick={event => this.toggleTimer(event)}>
+                        {running ? 'stop' : 'start'}
+                    </button>
+                    {running
+                        ? <button className='timer-cancel'
+                            onClick={event => this.stop(true)}
+                            >cancel</button>
+                        : ''}
+                </div>
             </div>
         );
     }
