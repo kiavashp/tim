@@ -229,6 +229,10 @@ class Timer extends React.Component {
             change = 1;
         }
 
+        if (event.shiftKey) {
+            change *= 10;
+        }
+
         if (change) {
             let value = setDuration[unit] + change;
 
