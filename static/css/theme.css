@@ -55,6 +55,7 @@ input {
     border: 2px solid transparent;
     border-radius: 4px;
     margin: 0 -2px;
+    -webkit-app-region: no-drag;
 }
 
 .timer-display > span:focus {
