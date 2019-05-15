@@ -21,6 +21,13 @@
     height: 32px;
 }
 
+#tim-wrapper.mini .titlebar .window-mode-button {
+    background-image: url(../assets/expand.svg);
+}
+#tim-wrapper.mini .titlebar .window-mode-button:active {
+    background-image: url(../assets/expand-active.svg);
+}
+
 #tim-wrapper.mini .tim-body {
     flex-grow: 1;
 }

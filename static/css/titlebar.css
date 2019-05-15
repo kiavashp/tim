@@ -46,14 +46,14 @@
     background-image: url(../assets/close-active.svg);
 }
 
-.titlebar .expand-button {
-    background-image: url(../assets/expand.svg);
+.titlebar .window-mode-button {
+    background-image: url(../assets/collapse.svg);
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 15px auto;
+    background-size: 16px auto;
 }
-.titlebar .expand-button:active {
-    background-image: url(../assets/expand-active.svg);
+.titlebar .window-mode-button:active {
+    background-image: url(../assets/collapse-active.svg);
 }
 
 .titlebar .reports-button {

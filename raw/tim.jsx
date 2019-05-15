@@ -31,10 +31,8 @@ class Tim extends GlobalEventComponent {
             miniPlayerMode: false
         };
 
-        this.ipc.on('set-mini-player', (event, enabled) => {
-            this.setState({
-                miniPlayerMode: enabled
-            });
+        this.ipc.on('set-state', (event, state) => {
+            this.setState(state);
         });
     }
 
@@ -103,12 +101,13 @@ class Tim extends GlobalEventComponent {
         ipc.send('close');
     }
 
-    expand(enabled=!this.state.miniPlayerMode) {
+    toggleWindowMode() {
         const {ipc} = this;
-        ipc.send('expand');
+        const {miniPlayerMode} = this.state;
+        ipc.send('toggle-window-mode');
 
         this.setState({
-            miniPlayerMode: enabled
+            miniPlayerMode: !miniPlayerMode
         });
     }
 
@@ -123,7 +122,7 @@ class Tim extends GlobalEventComponent {
                         reportsOpen={reportsOpen}
                         toggleReports={() => this.toggleReports()}
                         miniPlayerMode={miniPlayerMode}
-                        expand={() => this.expand()}
+                        toggleWindowMode={() => this.toggleWindowMode()}
                         close={() => this.close()}/>
                     <div className="tim-body">
                         <Timer key="timer"
@@ -139,7 +138,7 @@ class Tim extends GlobalEventComponent {
                     reportsOpen={reportsOpen}
                     toggleReports={() => this.toggleReports()}
                     miniPlayerMode={miniPlayerMode}
-                    expand={() => this.expand()}
+                    toggleWindowMode={() => this.toggleWindowMode()}
                     close={() => this.close()}/>
                 <div className="tim-body">
                     <Timer key="timer"

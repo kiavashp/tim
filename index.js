@@ -4,11 +4,8 @@ const electron = require('electron');
 const {app, BrowserWindow, Menu, shell, ipcMain} = electron;
 const defaultMenu = require('electron-default-menu');
 
-// add cred install location to PATH
-process.env.PATH = `${process.env.PATH}:/usr/local/bin:${process.env.HOME}/bin`;
-
 let mainWindow;
-let miniPlayer = false;
+let miniPlayerMode = false;
 
 function defaultSize() {
     return {
@@ -37,17 +34,17 @@ function createWindow() {
         show: false
     });
     mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
-        if (miniPlayer) {
-            setMiniPlayer(mainWindow.webContents, miniPlayer);
+        if (miniPlayerMode) {
+            setMiniPlayer(mainWindow.webContents, miniPlayerMode);
         }
+        mainWindow.show();
     });
 	mainWindow.loadFile('static/index.html');
 	mainWindow.once('closed', () => mainWindow = null);
 }
 
 function setMiniPlayer(webContents, enabled) {
-    miniPlayer = enabled;
+    miniPlayerMode = enabled;
     if (enabled) {
         mainWindow.setMinimumSize(280, 76);
         mainWindow.setMaximumSize(500, 76);
@@ -58,7 +55,9 @@ function setMiniPlayer(webContents, enabled) {
         mainWindow.setMaximumSize(10e3, 10e3);
         mainWindow.setSize(width, height);
     }
-    webContents.send('set-mini-player', miniPlayer);
+    webContents.send('set-state', {
+        miniPlayerMode
+    });
 }
 
 app.on('ready', () => {
@@ -79,8 +78,8 @@ app.on('ready', () => {
         window.close();
     });
 
-    ipcMain.on('expand', (event) => {
-        setMiniPlayer(event.sender, !miniPlayer);
+    ipcMain.on('toggle-window-mode', (event) => {
+        setMiniPlayer(event.sender, !miniPlayerMode);
     });
 });
 
