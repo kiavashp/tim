@@ -36,22 +36,6 @@ class Tim extends GlobalEventComponent {
         });
     }
 
-    onGlobalKeyDown(event) {
-        const {reportsOpen} = this.state;
-        const {key, shiftKey} = event;
-        let newState = {};
-
-        if (reportsOpen && key === '}' && shiftKey) {
-            this.setState({
-                reportsOpen: false
-            });
-        } else if (!reportsOpen && key === '{' && shiftKey) {
-            this.setState({
-                reportsOpen: true
-            });
-        }
-    }
-
     saveTimer(timer) {
         const {timers} = this;
         timers.save(timer);
@@ -112,7 +96,7 @@ class Tim extends GlobalEventComponent {
     }
 
     render() {
-        const {state, timers} = this;
+        const {state, timers, ipc} = this;
         const {reportsOpen, miniPlayerMode} = state;
 
         if (miniPlayerMode) {
@@ -142,6 +126,7 @@ class Tim extends GlobalEventComponent {
                     close={() => this.close()}/>
                 <div className="tim-body">
                     <Timer key="timer"
+                        events={ipc}
                         saveTimer={timer => this.saveTimer(timer)}/>
                     <div key="separator" className="separator"></div>
                     <Reports key="reports"

@@ -10,13 +10,25 @@ class Timer extends React.Component {
     constructor(props) {
         super(props);
 
+        const {events, saveTimer} = props;
+
+        events.on('toggle-timer', () => {
+            this.toggleTimer();
+        });
+
+        events.on('cancel-timer', () => {
+            if (this.state.running) {
+                this.stop(true);
+            }
+        });
+
         let timer = {
             start: null,
             end: null,
             notes: []
         };
 
-        this.saveTimer = props.saveTimer;
+        this.saveTimer = saveTimer;
 
         this.state = {
             running: null,
