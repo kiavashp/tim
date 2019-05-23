@@ -2,10 +2,13 @@
 
 const electron = require('electron');
 const {app, BrowserWindow, Menu, shell, ipcMain} = electron;
-const defaultMenu = require('electron-default-menu');
+const buildMenu = require(`${__dirname}/lib/menu`);
 
 let mainWindow;
-let miniPlayerMode = false;
+let state = {
+    miniPlayerMode: false,
+    reportsOpen: false
+};
 
 function defaultSize() {
     return {
@@ -34,17 +37,25 @@ function createWindow() {
         show: false
     });
     mainWindow.once('ready-to-show', () => {
-        if (miniPlayerMode) {
-            setMiniPlayer(mainWindow.webContents, miniPlayerMode);
-        }
+        setState({}, mainWindow.webContents);
         mainWindow.show();
     });
 	mainWindow.loadFile('static/index.html');
 	mainWindow.once('closed', () => mainWindow = null);
 }
 
-function setMiniPlayer(webContents, enabled) {
-    miniPlayerMode = enabled;
+function setState(change, webContents=mainWindow.webContents) {
+    Object.assign(state, change);
+    webContents.send('set-state', state);
+}
+
+function toggleWindowMode(webContents=mainWindow.webContents) {
+    const enabled = !state.miniPlayerMode;
+
+    setState({
+        miniPlayerMode: enabled
+    }, webContents);
+
     if (enabled) {
         mainWindow.setMinimumSize(280, 76);
         mainWindow.setMaximumSize(500, 76);
@@ -55,21 +66,25 @@ function setMiniPlayer(webContents, enabled) {
         mainWindow.setMaximumSize(10e3, 10e3);
         mainWindow.setSize(width, height);
     }
-    webContents.send('set-state', {
-        miniPlayerMode
-    });
 }
 
 app.on('ready', () => {
-    const menu = defaultMenu(app, shell);
-    menu.forEach(m => {
-        if (m.label === 'View') {
-            m.submenu = m.submenu.filter(s => {
-                return s.label !== 'Reload';
-            });
+    const {template, events} = buildMenu(app, shell, state, setState);
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+
+    events.on('toggle-reports', (browserWindow, event) => {
+        event.preventDefault();
+        if (browserWindow) {
+            setState({reportsOpen: !state.reportsOpen}, browserWindow.webContents);
         }
-    })
-    Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
+    });
+
+    events.on('toggle-window-mode', (browserWindow, event) => {
+        event.preventDefault();
+        if (browserWindow) {
+            toggleWindowMode(browserWindow.webContents);
+        }
+    });
 
     createWindow();
 
@@ -79,7 +94,7 @@ app.on('ready', () => {
     });
 
     ipcMain.on('toggle-window-mode', (event) => {
-        setMiniPlayer(event.sender, !miniPlayerMode);
+        toggleWindowMode(event.sender);
     });
 });
 
