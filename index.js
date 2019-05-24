@@ -1,10 +1,12 @@
 'use strict';
 
 const electron = require('electron');
-const {app, BrowserWindow, Menu, shell, ipcMain} = electron;
+const {app, BrowserWindow, Menu, Tray, shell, ipcMain, systemPreferences} = electron;
 const buildMenu = require(`${__dirname}/lib/menu`);
 
-let mainWindow;
+let context = {
+    mainWindow: null
+};
 let state = {
     miniPlayerMode: false,
     reportsOpen: false
@@ -24,7 +26,7 @@ function createWindow() {
     const {width, height, minWidth, minHeight} = defaultSize();
     const padding = 20;
 
-	mainWindow = new BrowserWindow({
+	context.mainWindow = new BrowserWindow({
         width,
         height,
         minWidth,
@@ -36,20 +38,20 @@ function createWindow() {
         frame: false,
         show: false
     });
-    mainWindow.once('ready-to-show', () => {
-        setState({}, mainWindow.webContents);
-        mainWindow.show();
+    context.mainWindow.once('ready-to-show', () => {
+        setState({}, context.mainWindow.webContents);
+        context.mainWindow.show();
     });
-	mainWindow.loadFile('static/index.html');
-	mainWindow.once('closed', () => mainWindow = null);
+	context.mainWindow.loadFile('static/index.html');
+	context.mainWindow.once('closed', () => context.mainWindow = null);
 }
 
-function setState(change, webContents=mainWindow.webContents) {
+function setState(change, webContents=context.mainWindow.webContents) {
     Object.assign(state, change);
     webContents.send('set-state', state);
 }
 
-function toggleWindowMode(webContents=mainWindow.webContents) {
+function toggleWindowMode(webContents=context.mainWindow.webContents) {
     const enabled = !state.miniPlayerMode;
 
     setState({
@@ -57,20 +59,29 @@ function toggleWindowMode(webContents=mainWindow.webContents) {
     }, webContents);
 
     if (enabled) {
-        mainWindow.setMinimumSize(280, 76);
-        mainWindow.setMaximumSize(500, 76);
-        mainWindow.setSize(280, 76);
+        context.mainWindow.setMinimumSize(280, 76);
+        context.mainWindow.setMaximumSize(500, 76);
+        context.mainWindow.setSize(280, 76);
     } else {
         const {width, height, minWidth, minHeight} = defaultSize();
-        mainWindow.setMinimumSize(minWidth, minHeight);
-        mainWindow.setMaximumSize(10e3, 10e3);
-        mainWindow.setSize(width, height);
+        context.mainWindow.setMinimumSize(minWidth, minHeight);
+        context.mainWindow.setMaximumSize(10e3, 10e3);
+        context.mainWindow.setSize(width, height);
     }
 }
 
 app.on('ready', () => {
-    const {template, events} = buildMenu(app, shell, state, setState);
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+    const {menuTemplate, trayTemplate, events} = buildMenu(app, shell, context);
+    Menu.setApplicationMenu(Menu.buildFromTemplate(menuTemplate));
+
+    const tray = new Tray(`${__dirname}/static/assets/tray-icon-Template.png`);
+
+    tray.on('click', () => {
+        if (!context.mainWindow) {
+            createWindow();
+        }
+        tray.popUpContextMenu(Menu.buildFromTemplate(trayTemplate));
+    });
 
     events.on('toggle-reports', (browserWindow, event) => {
         event.preventDefault();
@@ -96,6 +107,20 @@ app.on('ready', () => {
     ipcMain.on('toggle-window-mode', (event) => {
         toggleWindowMode(event.sender);
     });
+
+    ipcMain.on('timer-start', (event) => {
+        trayTemplate[0].label = 'Stop Timer';
+        trayTemplate[1].visible = true;
+    });
+
+    ipcMain.on('timer-stop', (event) => {
+        trayTemplate[0].label = 'Start Timer';
+        trayTemplate[1].visible = false;
+    });
+
+    ipcMain.on('update-timer', (event, timerString) => {
+        tray.setTitle(timerString ? ` ${timerString}` : '');
+    });
 });
 
 app.on('window-all-closed', () => {
@@ -105,7 +130,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-	if (mainWindow === null) {
+	if (context.mainWindow === null) {
 		createWindow();
 	}
 });
