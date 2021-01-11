@@ -37,6 +37,7 @@ function createWindow() {
         fullscreenable: false,
         frame: false,
         show: false,
+        vibrancy: 'dark',
         webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true
