@@ -5,7 +5,6 @@ const {app, shell} = remote;
 const assert = require('assert');
 const path = require('path');
 const React = require('react');
-const GlobalEventComponent = require('./global-event-component');
 const Titlebar = require('./titlebar');
 const Timer = require('./timer');
 const Reports = require('./reports');
@@ -16,7 +15,7 @@ const exportsPath = app.getPath('downloads');
 const timeDataPath = `${appDataPath}/time-data`;
 const userExporterPath = `${appDataPath}/user-exporter`;
 
-class Tim extends GlobalEventComponent {
+class Tim extends React.Component {
     constructor(props) {
         super(props);
 
