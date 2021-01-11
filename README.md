@@ -2,9 +2,9 @@ Tim
 ===
 > Desktop application for time tracking and invoice generation.
 
-![Screenshot of Tim with Reports Sidebar](./screenshots/timer-with-reports.png)
+![Screenshot of Tim with Reports Sidebar](./screenshots/timer-with-reports.png)<br>
 *Mini Player:*
-![Screenshot of Tim Mini Player](./screenshots/mini-player-set-time.png)
+![Screenshot of Tim Mini Player](./screenshots/mini-player-set-time.png)<br>
 *Tray Icon:*
 ![Screenshot of Tim Tray Icon](./screenshots/tray-icon.png)
 
