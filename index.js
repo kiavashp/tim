@@ -36,7 +36,11 @@ function createWindow() {
         acceptFirstMouse: true,
         fullscreenable: false,
         frame: false,
-        show: false
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true
+        }
     });
     context.mainWindow.once('ready-to-show', () => {
         setState({}, context.mainWindow.webContents);

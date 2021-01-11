@@ -42,11 +42,11 @@ class Tim extends GlobalEventComponent {
     }
 
     openDataDirectory() {
-        shell.openItem(timeDataPath);
+        shell.openPath(timeDataPath);
     }
 
     openUserExporterDirectory() {
-        shell.openItem(userExporterPath);
+        shell.openPath(userExporterPath);
     }
 
     createExport(dates) {
