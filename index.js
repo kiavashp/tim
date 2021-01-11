@@ -47,6 +47,17 @@ function createWindow() {
         setState({}, context.mainWindow.webContents);
         context.mainWindow.show();
     });
+    context.mainWindow.on('resized', () => {
+        if (state.miniPlayerMode) {
+            const bounds = context.mainWindow.getBounds();
+
+            if (bounds.height < 130) {
+                context.mainWindow.setBounds({height: 76}, true);
+            } else if (bounds.height < 220) {
+                context.mainWindow.setBounds({height: 220}, true);
+            }
+        }
+    });
 	context.mainWindow.loadFile('static/index.html');
 	context.mainWindow.once('closed', () => context.mainWindow = null);
 }
@@ -65,7 +76,7 @@ function toggleWindowMode(webContents=context.mainWindow.webContents) {
 
     if (enabled) {
         context.mainWindow.setMinimumSize(280, 76);
-        context.mainWindow.setMaximumSize(500, 76);
+        context.mainWindow.setMaximumSize(500, 10e3);
         context.mainWindow.setSize(280, 76);
     } else {
         const {width, height, minWidth, minHeight} = defaultSize();

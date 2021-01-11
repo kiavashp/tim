@@ -110,6 +110,7 @@ class Tim extends GlobalEventComponent {
                         close={() => this.close()}/>
                     <div className="tim-body">
                         <Timer key="timer"
+                            miniPlayerMode={miniPlayerMode}
                             saveTimer={timer => this.saveTimer(timer)}/>
                     </div>
                 </div>
