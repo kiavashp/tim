@@ -28,6 +28,7 @@ class Timer extends React.Component {
             notes: []
         };
 
+        this.events = events;
         this.saveTimer = saveTimer;
 
         this.state = {
@@ -55,6 +56,7 @@ class Timer extends React.Component {
     }
 
     start() {
+        const {events} = this;
         const {setDuration} = this.state;
         const {hours, minutes, seconds} = setDuration;
         let start = new Date(Date.now() - (seconds * 1e3) - (minutes * 6e4) - (hours * 36e5));
@@ -63,6 +65,8 @@ class Timer extends React.Component {
                 end: new Date()
             });
         }, 1e3);
+
+        events.send('timer-start');
 
         this.setState({
             running: interval,
@@ -77,6 +81,7 @@ class Timer extends React.Component {
     }
 
     stop(cancel) {
+        const {events} = this;
         const {running, start, end, notes, newNote} = this.state;
 
         clearInterval(running);
@@ -90,6 +95,8 @@ class Timer extends React.Component {
                 notes: addNote ? notes.concat(addNote) : notes
             });
         }
+
+        events.send('timer-stop');
 
         this.setState({
             running: null,
@@ -275,6 +282,7 @@ class Timer extends React.Component {
     }
 
     render() {
+        const {events} = this;
         const {
             running, start, end, notes, newNote, setDuration,
             editing, editIndex, editValue
@@ -284,12 +292,15 @@ class Timer extends React.Component {
             minutes: setDuration.minutes,
             seconds: setDuration.seconds
         }).format('hh:mm:ss', {trim: false}).split(':');
+        const timerString = running ? moment.duration(end - start).format('hh:mm:ss', {trim: false}) : null;
+
+        events.send('update-timer', timerString);
 
         return (
             <div className="timer">
                 {running
                     ? <div className="timer-display">
-                        {moment.duration(end - start).format('hh:mm:ss', {trim: false})}
+                        {timerString}
                       </div>
                     : <div className="timer-display">
                         <span
