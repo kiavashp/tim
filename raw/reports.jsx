@@ -183,13 +183,20 @@ class Reports extends React.Component {
             dates.start >= firstDate
         )
 
-        return reports;
+        // filter out empty time periods (except for current period)
+        return reports.filter(report => report.future || !report.empty);
     }
 
     onReportClick(event, index) {
         const {reports} = this.state;
         const newReports = reports.slice();
-        const showTimers = newReports[index].showTimers;
+        const report = newReports[index];
+        const showTimers = report.showTimers;
+
+        if (!showTimers && report.timers.length === 0) {
+            // don't try opening a report with no timers
+            return;
+        };
 
         newReports[index] = Object.assign({}, newReports[index], {
             showTimers: !showTimers

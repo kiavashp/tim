@@ -47,6 +47,8 @@ class Timer extends React.Component {
             editIndex: null,
             editValue: null
         };
+
+        this.notesScrollElement = React.createRef();
     }
 
     componentWillUnmount() {
@@ -132,6 +134,13 @@ class Timer extends React.Component {
                 newNote: null,
                 notes: notes.concat(value)
             });
+
+            if (this.props.miniPlayerMode) {
+                requestAnimationFrame(() => {
+                    let element = this.notesScrollElement.current;
+                    element.scrollTop = element.scrollHeight - element.clientHeight;
+                });
+            }
         }
     }
 
@@ -283,6 +292,7 @@ class Timer extends React.Component {
 
     render() {
         const {events} = this;
+        const {miniPlayerMode} = this.props;
         const {
             running, start, end, notes, newNote, setDuration,
             editing, editIndex, editValue
@@ -296,79 +306,96 @@ class Timer extends React.Component {
 
         events.send('update-timer', timerString);
 
-        return (
-            <div className="timer">
-                {running
-                    ? <div className="timer-display">
-                        {timerString}
-                      </div>
-                    : <div className="timer-display">
-                        <span
-                            className="timer-display-hour"
-                            tabIndex="0"
-                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 'hours')}
-                        >{setDurationTimes[0]}</span>:<span
-                            className="timer-display-minute"
-                            tabIndex="0"
-                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 'minutes')}
-                        >{setDurationTimes[1]}</span>:<span
-                            className="timer-display-second"
-                            tabIndex="0"
-                            onKeyDown={event => this.onTimerDisplayKeyDown(event, 'seconds')}
-                        >{setDurationTimes[2]}</span>
-                      </div>
-                }
-                <div className="timer-notes">
-                    {notes.map((note, i) => {
-                        if (editing && editIndex === i) {
-                            return (
-                                <input key={`${i}-edit`}
-                                    name="timer-notes-input"
-                                    className="timer-notes-input"
-                                    placeholder="edit note"
-                                    autoFocus="true"
-                                    value={editValue}
-                                    onKeyPress={event => this.onNotesEditKeyPress(event)}
-                                    onKeyDown={event => this.onNotesEditKeyDown(event)}
-                                    onChange={event => this.onNotesEditChange(event)}/>
-                            );
-                        } else {
-                            return (
-                                <div key={i} className="timer-notes-item"
-                                    tabIndex="0"
-                                    onKeyPress={event => this.onNotesItemKeyPress(event, i)}
-                                    onKeyDown={event => this.onNotesItemKeyDown(event, i)}>
-                                    <div className="timer-notes-item-value">{note}</div>
-                                    <div className="timer-notes-item-remove"
-                                        onClick={event => this.removeNote(i)}
-                                        >&times;</div>
-                                </div>);
-                        }
-                    })}
-                    {editing
-                        ? ''
-                        : <input name="timer-notes-input"
-                                className="timer-notes-input"
-                                placeholder="add note"
-                                value={newNote || ''}
-                                onKeyPress={event => this.onNotesAddKeyPress(event)}
-                                onKeyDown={event => this.onNotesAddKeyDown(event)}
-                                onChange={event => this.onNotesAddChange(event)}/>
+        const timerElement = running
+            ? (<div className="timer-display">
+                {timerString}
+              </div>)
+            : (<div className="timer-display">
+                <span
+                    className="timer-display-hour"
+                    tabIndex="0"
+                    onKeyDown={event => this.onTimerDisplayKeyDown(event, 'hours')}
+                >{setDurationTimes[0]}</span>:<span
+                    className="timer-display-minute"
+                    tabIndex="0"
+                    onKeyDown={event => this.onTimerDisplayKeyDown(event, 'minutes')}
+                >{setDurationTimes[1]}</span>:<span
+                    className="timer-display-second"
+                    tabIndex="0"
+                    onKeyDown={event => this.onTimerDisplayKeyDown(event, 'seconds')}
+                >{setDurationTimes[2]}</span>
+            </div>);
+
+        const notesElement = (<div className="timer-notes">
+            <div className="timer-notes-wrapper" ref={this.notesScrollElement}>
+                {notes.map((note, i) => {
+                    if (editing && editIndex === i) {
+                        return (
+                            <input key={`${i}-edit`}
+                                name="timer-notes-input"
+                                className="timer-notes-input timer-notes-input-edit"
+                                placeholder="edit note"
+                                autoFocus="true"
+                                value={editValue}
+                                onKeyPress={event => this.onNotesEditKeyPress(event)}
+                                onKeyDown={event => this.onNotesEditKeyDown(event)}
+                                onChange={event => this.onNotesEditChange(event)}/>
+                        );
+                    } else {
+                        return (
+                            <div key={i} className="timer-notes-item"
+                                tabIndex="0"
+                                onKeyPress={event => this.onNotesItemKeyPress(event, i)}
+                                onKeyDown={event => this.onNotesItemKeyDown(event, i)}>
+                                <div className="timer-notes-item-value">{note}</div>
+                                <div className="timer-notes-item-remove"
+                                    onClick={event => this.removeNote(i)}
+                                    >&times;</div>
+                            </div>);
                     }
-                </div>
-                <div className="timer-controls">
-                    <button className={`timer-toggle ${running ? 'running' : ''}`}
-                        onClick={event => this.toggleTimer(event)}>
-                        {running ? 'stop' : 'start'}
-                    </button>
-                    {running
-                        ? <button className='timer-cancel'
-                            onClick={event => this.stop(true)}
-                            >cancel</button>
-                        : ''}
-                </div>
+                })}
             </div>
-        );
+            {editing
+                ? ''
+                : <input name="timer-notes-input"
+                        className="timer-notes-input"
+                        placeholder="add note"
+                        value={newNote || ''}
+                        onKeyPress={event => this.onNotesAddKeyPress(event)}
+                        onKeyDown={event => this.onNotesAddKeyDown(event)}
+                        onChange={event => this.onNotesAddChange(event)}/>
+            }
+        </div>);
+
+        const controlsElement = (<div className="timer-controls">
+                <button className={`timer-toggle ${running ? 'running' : ''}`}
+                    onClick={event => this.toggleTimer(event)}>
+                    {running ? 'stop' : 'start'}
+                </button>
+                {running
+                    ? <button className='timer-cancel'
+                        onClick={event => this.stop(true)}
+                        >cancel</button>
+                    : ''}
+            </div>);
+
+        if (miniPlayerMode) {
+            return (
+                <div className="timer">
+                    <div className="timer-miniplayer-wrapper">
+                        {timerElement}
+                        {controlsElement}
+                    </div>
+                    {notesElement}
+                </div>
+            );
+        } else {
+            return (<div className="timer">
+                {timerElement}
+                {notesElement}
+                {controlsElement}
+            </div>);
+        }
     }
 }
 

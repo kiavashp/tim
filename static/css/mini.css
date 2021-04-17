@@ -30,10 +30,18 @@
 
 #tim-wrapper.mini .tim-body {
     flex-grow: 1;
+    flex-direction: column;
 }
 
 #tim-wrapper.mini .timer {
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    max-height: 100%;
+}
+
+#tim-wrapper.mini .timer-miniplayer-wrapper {
     display: flex;
     flex-direction: row;
 }
@@ -43,18 +51,51 @@
     margin: 0;
     flex-grow: 1;
     line-height: 76px;
+    height: 76px;
 }
 
 #tim-wrapper.mini .timer-controls {
     display: flex;
     flex-direction: column;
     width: 80px;
+    height: 60px;
     margin: 8px;
     -webkit-app-region: no-drag;
 }
 
 #tim-wrapper.mini .timer-notes {
-    display: none;
+    -webkit-app-region: no-drag;
+    box-sizing: border-box;
+    margin: 0;
+    padding-bottom: 16px;
+    border-top: 1px solid #1a1a1a;
+    overflow: hidden;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#tim-wrapper.mini .timer-notes-wrapper {
+    overflow: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 16px;
+    padding-left: 0px;
+    padding-bottom: 10px;
+    /* background set explicitly to get white scrollbar */
+    background-color: var(--background-color);
+}
+
+#tim-wrapper.mini .timer-notes-item,
+#tim-wrapper.mini .timer-notes-input {
+    margin: 4px;
+}
+
+#tim-wrapper.mini .timer-notes-input:not(.timer-notes-input-edit) {
+    flex-grow: 0;
+    box-sizing: border-box;
+    width: calc( 100% - 16px );
+    margin: 0;
 }
 
 #tim-wrapper.mini .timer-toggle {
